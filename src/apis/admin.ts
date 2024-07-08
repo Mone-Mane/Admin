@@ -24,6 +24,24 @@ export const getRatioCategory = async (): Promise<AxiosResponse<any>> => {
   });
 };
 
+interface NotificationData {
+  title: string;
+  message: string;
+}
+
+export const postNotification = async ({
+  title,
+  message,
+}: NotificationData): Promise<AxiosResponse<any>> => {
+  return await onRequest({
+    method: "POST",
+    url: "/users/notification/all",
+    data: {
+      title,
+      message,
+    },
+  });
+};
 // import axios, { AxiosResponse } from "axios";
 
 // export const getAdminInfo = async (

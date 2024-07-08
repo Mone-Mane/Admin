@@ -14,6 +14,7 @@ import {
   useTheme,
 } from "@mui/material";
 import { drawerWidth } from "layouts/main-layout";
+import { postNotification } from "apis/admin";
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -81,14 +82,21 @@ function MultipleSelect() {
 
 const Message = () => {
   const [messageContent, setMessageContent] = useState("");
+  const [messageTitle, setMessageTitle] = useState("");
 
   const handleMessageChange = (event) => {
     setMessageContent(event.target.value);
   };
-
-  const handleSendClick = () => {
-    // Add the logic to handle the send action here
-    console.log("Message content:", messageContent);
+  const handleMessageTitleChange = (event) => {
+    setMessageTitle(event.target.value);
+  };
+  const handleSendClick = async () => {
+    try {
+      console.log("Message content:", messageContent, messageTitle);
+      postNotification({ title: messageTitle, message: messageContent });
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (
@@ -123,17 +131,26 @@ const Message = () => {
             gap={3.75}
           >
             <Typography variant="h5" color="text.primary">
-              메시지 보내기
+              알림 보내기
             </Typography>
           </Stack>
           <Divider />
           <Stack height={1} style={{ padding: 20 }}>
             <MultipleSelect />
-            <div style={{ color: "#686868", marginBottom: 20, marginLeft: 15 }}>
+            <div style={{ color: "#686868", marginLeft: 10 }}>
               개별회원에게 보내고싶은 경우,{" "}
               <span style={{ color: "blue" }}>사용자 목록</span>에서 사용자를
               선택해주세요
             </div>
+            <TextField
+              id="standard-helperText"
+              label="상세알림 타이틀"
+              defaultValue="Default Value"
+              variant="standard"
+              value={messageTitle}
+              onChange={handleMessageTitleChange}
+              style={{ marginTop: 20 }}
+            />
             <TextField
               id="outlined-multiline-static"
               label="상세알림 내용"
@@ -142,10 +159,11 @@ const Message = () => {
               placeholder="내용을 작성해주세요"
               value={messageContent}
               onChange={handleMessageChange}
+              style={{ marginTop: 20 }}
             />
             <Button
               variant="contained"
-              style={{ width: 200, marginTop: 20 }}
+              style={{ width: 200, marginTop: 20, alignSelf: "end" }}
               onClick={handleSendClick}
             >
               보내기
